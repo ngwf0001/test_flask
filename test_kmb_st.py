@@ -1,6 +1,7 @@
 import requests
 import datetime as dt
-# import pickle
+import pickle
+import os
 from tabulate import tabulate
 import pandas as pd
 import streamlit as st
@@ -12,24 +13,26 @@ def grab_stop_db():
     filename ='stop_db.pkl'
     url = 'https://data.etabus.gov.hk/v1/transport/kmb/route-stop'
 
-#     def file_older_than(filename, days=7):
-#         t = os.path.getmtime(filename)
-#         file_datetime= dt.datetime.fromtimestamp(t)
-#         return  dt.datetime.now() - file_datetime > dt.timedelta(0)
+    def file_older_than(filename, days=7):
+        t = os.path.getmtime(filename)
+        file_datetime= dt.datetime.fromtimestamp(t)
+        return  dt.datetime.now() - file_datetime > dt.timedelta(days)
 
-#     if not os.path.exists(filename) or file_older_than(filename, days= 0):
-#         data = requests.get(url).json()['data']
-#         with open(filename, 'wb') as f:
-#             pickle.dump(data, f)
-#         return data
-#     else:
-    # with open(filename, 'rb') as f:
-    #     data = pickle.load(f)
-    #     return data
-    data = requests.get(url).json()['data']
+    if (not os.path.exists(filename)) or file_older_than(filename, days= 7):
+        print('grab data from the API')
+        data = requests.get(url).json()['data']
+        with open(filename, 'wb') as f:
+            pickle.dump(data, f)
+        return data
+    else:
+        print('load data from the pickle file')
+        with open(filename, 'rb') as f:
+            data = pickle.load(f)
+        return data
+    # data = requests.get(url).json()['data']
     # with open(filename, 'wb') as f:
     #     pickle.dump(data, f)
-    return data
+    # return data
 
 def get_route_stops(route_number: str, in_out: str = 'O'):
     data = grab_stop_db()
