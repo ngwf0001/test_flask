@@ -1,7 +1,6 @@
 import requests
 import datetime as dt
-import pickle
-import os
+# import pickle
 from tabulate import tabulate
 import pandas as pd
 import streamlit as st
@@ -28,8 +27,8 @@ def grab_stop_db():
     #     data = pickle.load(f)
     #     return data
     data = requests.get(url).json()['data']
-    with open(filename, 'wb') as f:
-        pickle.dump(data, f)
+    # with open(filename, 'wb') as f:
+    #     pickle.dump(data, f)
     return data
 
 def get_route_stops(route_number: str, in_out: str = 'O'):
