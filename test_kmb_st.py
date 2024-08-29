@@ -75,12 +75,11 @@ def show_route(stop_name_list, stops_eta, route_number: str, in_out: str = 'O'):
             new_time = dt.datetime.fromisoformat(stop['eta']).replace(tzinfo=None)
             print(new_time)
             time_difference = new_time - dt.datetime.now()
-
-            minutes = time_difference.seconds // 60
-            seconds = time_difference.seconds % 60
+            minutes, seconds  = time_difference.seconds // 60, time_difference.seconds % 60 if  time_difference > dt.datetime(0) else 0, 0
             print(minutes, '分', seconds, '秒'  )
+
             table.append([stop_seq, stop_name_list[stop_seq-1],
-                         new_time.strftime('%H:%M:%S'),  f'{minutes}分{seconds}秒'
+                         new_time.strftime('%H:%M:%S'),  f'{minutes}:{seconds}'
                          ])
         else:
             table.append([stop_seq, stop_name_list[stop_seq-1], 'NO TIMING',''])
@@ -99,10 +98,11 @@ def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O
             new_time = dt.datetime.fromisoformat(stop['eta']).replace(tzinfo=None)
             time_difference = new_time - dt.datetime.now()
 
-            minutes = time_difference.seconds // 60
-            seconds = time_difference.seconds % 60
+            # minutes = time_difference.seconds // 60
+            # seconds = time_difference.seconds % 60
+            minutes, seconds  =( time_difference.seconds // 60, time_difference.seconds % 60 ) if  time_difference > dt.timedelta(0) else (0, 0)
             table.append([stop_seq, stop_name_list[stop_seq-1],
-                         new_time.strftime('%H:%M:%S'),  f'{minutes}分{seconds}秒'
+                         new_time.strftime('%H:%M:%S'),  f'{minutes:02d}:{seconds:02d}'
                          ])
         else:
             table.append([stop_seq, stop_name_list[stop_seq-1], 'NO TIMING',''])
@@ -111,8 +111,8 @@ def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O
     st.dataframe(df, height = 1000,  use_container_width=True, hide_index=True)
 
 
-# st.set_page_config(page_title='Frankie KMB page ', layout="wide")
-# route_number = input('What is the route? ').strip().upper()
+st.set_page_config(page_title='Frankie KMB page ', layout="wide")
+
 route_number = st.text_input('What is the route? ').strip().upper()
 
 if route_number:
