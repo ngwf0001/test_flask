@@ -4,6 +4,7 @@ import pickle
 import os
 from tabulate import tabulate
 import pandas as pd
+import streamlit as st
 
 url0 = 'https://data.etabus.gov.hk/'
 urlstop0 = '/v1/transport/kmb/stop/'
@@ -12,20 +13,24 @@ def grab_stop_db():
     filename ='stop_db.pkl'
     url = 'https://data.etabus.gov.hk/v1/transport/kmb/route-stop'
 
-    def file_older_than(filename, days=7):
-        t = os.path.getmtime(filename)
-        file_datetime= dt.datetime.fromtimestamp(t)
-        return  dt.datetime.now() - file_datetime > dt.timedelta(0)
+#     def file_older_than(filename, days=7):
+#         t = os.path.getmtime(filename)
+#         file_datetime= dt.datetime.fromtimestamp(t)
+#         return  dt.datetime.now() - file_datetime > dt.timedelta(0)
 
-    if not os.path.exists(filename) or file_older_than(filename, days= 0):
-        data = requests.get(url).json()['data']
-        with open(filename, 'wb') as f:
-            pickle.dump(data, f)
-        return data
-    else:
-        with open(filename, 'rb') as f:
-            return pickle.load(f)
-
+#     if not os.path.exists(filename) or file_older_than(filename, days= 0):
+#         data = requests.get(url).json()['data']
+#         with open(filename, 'wb') as f:
+#             pickle.dump(data, f)
+#         return data
+#     else:
+    # with open(filename, 'rb') as f:
+    #     data = pickle.load(f)
+    #     return data
+    data = requests.get(url).json()['data']
+    with open(filename, 'wb') as f:
+        pickle.dump(data, f)
+    return data
 
 def get_route_stops(route_number: str, in_out: str = 'O'):
     data = grab_stop_db()
@@ -86,6 +91,7 @@ def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O
     # stop_name_list = get_stop_names(route_number, in_out)
     # stops_eta = get_stops_eta(route_number, in_out)
     table =[]
+    df = None
     headers = ['站號', '站名', '到站時間', '相差']
     for stop in stops_eta:
         stop_seq = stop['seq']
@@ -101,8 +107,9 @@ def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O
         else:
             table.append([stop_seq, stop_name_list[stop_seq-1], 'NO TIMING',''])
         df = pd.DataFrame(table, columns=headers)
+
     st.dataframe(df, height = 1000,  use_container_width=True, hide_index=True)
-    # st.write(tabulate(table, headers, tablefmt="simple_grid"))
+
 
 # st.set_page_config(page_title='Frankie KMB page ', layout="wide")
 # route_number = input('What is the route? ').strip().upper()
