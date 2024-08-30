@@ -1,9 +1,16 @@
+import streamlit as st
+st.set_page_config(page_title='BB 九巴到站時間查詢', layout="wide")
+
 import requests
 import datetime as dt
 import pickle
 import os
 import pandas as pd
-import streamlit as st
+
+
+"""
+# 九巴到站時間查詢
+"""
 
 url0 = 'https://data.etabus.gov.hk/'
 
@@ -75,7 +82,7 @@ def get_stops_eta(route_number: str):
 
 def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O'):
     table =[]
-    headers = ['站號', '站名', '到站時間', '相差']
+    headers = ['站號', '站名', '到站時間', '多久後到?']
     time_now =dt.datetime.now(dt.timezone.utc).astimezone()
     for stop in stops_eta:
         stop_seq = stop['seq']
@@ -88,14 +95,9 @@ def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O
             table.append([stop_seq, stop_name_list[stop_seq-1], 'NO TIMING',''])
     df = pd.DataFrame(table, columns=headers, )
     df.reindex(columns= ['站號'])
-
-
     st.dataframe(df, height=35*len(df)+38,  use_container_width=True, hide_index=True)
 
-
-st.set_page_config(page_title='Frankie KMB page ', layout="wide")
-
-route_number = st.text_input('What is the route? ').strip().upper()
+route_number = st.text_input('**請輸入路線號碼**').strip().upper()
 
 if route_number:
     columns_dict = {}
