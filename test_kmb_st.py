@@ -86,7 +86,9 @@ def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O
             table.append([stop_seq, stop_name_list[stop_seq-1], new_time.strftime('%H:%M:%S'),  f'{minutes:02d}:{seconds:02d}'])
         else:
             table.append([stop_seq, stop_name_list[stop_seq-1], 'NO TIMING',''])
-    df = pd.DataFrame(table, columns=headers)
+    df = pd.DataFrame(table, columns=headers, )
+    df.reindex(columns= ['站號'])
+
 
     st.dataframe(df, height=35*len(df)+38,  use_container_width=True, hide_index=True)
 
