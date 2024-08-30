@@ -8,9 +8,6 @@ import os
 import pandas as pd
 
 
-"""
-# Fan 九巴到站時間查詢
-"""
 
 url0 = 'https://data.etabus.gov.hk/'
 
@@ -81,8 +78,10 @@ def get_stops_eta(route_number: str):
 
 
 def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O'):
-    table =[]
+
     headers = ['站號', '站名', '到站時間', '多久後到?']
+    table =[headers]
+    table = []
     time_now =dt.datetime.now(dt.timezone.utc).astimezone()
     for stop in stops_eta:
         stop_seq = stop['seq']
@@ -90,21 +89,32 @@ def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O
             new_time = dt.datetime.fromisoformat(stop['eta'])
             time_difference = new_time - time_now
             minutes, seconds  =( time_difference.seconds // 60, time_difference.seconds % 60 ) if  time_difference > dt.timedelta(0) else (0, 0)
-            table.append([stop_seq, stop_name_list[stop_seq-1], new_time.strftime('%H:%M:%S'),  f'{minutes:02d}:{seconds:02d}'])
+            table.append([str(stop_seq), stop_name_list[stop_seq-1], new_time.strftime('%H:%M:%S'),  f'{minutes:02d}:{seconds:02d}'])
         else:
-            table.append([stop_seq, stop_name_list[stop_seq-1], 'NO TIMING',''])
+            table.append([str(stop_seq), stop_name_list[stop_seq-1], 'NO TIMING',''])
     df = pd.DataFrame(table, columns=headers, )
     df.reindex(columns= ['站號'])
     st.dataframe(df, height=35*len(df)+38,  use_container_width=True, hide_index=True)
 
-route_number = st.text_input('**請輸入路線號碼**').strip().upper()
+
+
+
+f"""
+# Fan 九巴到站時間查詢
+
+## 現在時間: {dt.datetime.now().strftime('%H:%M:%S') }
+
+"""
+
+route_number = st.text_input('## 請輸入路線號碼').strip().upper()
+if route_number: st.header(f'查詢路線: {route_number}')
+columns_dict = {}
+columns_dict['O'], columns_dict['I'] = st.columns(2)
 
 if route_number:
-    columns_dict = {}
     stops_eta_dict = get_stops_eta(route_number)
-    columns_dict['I'], columns_dict['O'] = st.columns(2)
-    for in_out in ['I', 'O']:
+    for in_out in ['O', 'I']:
         with columns_dict[in_out]:
-            st.header(f"Route: {route_number} In/Out: {in_out}")
+            st.header(f"{'回' if in_out=='I' else '去'}程")
             stop_name_list = get_stop_names(route_number, in_out)
             show_route_st(stop_name_list, stops_eta_dict[in_out], route_number, in_out)
