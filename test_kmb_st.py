@@ -5,7 +5,7 @@ import requests
 import datetime as dt
 import pickle
 import os
-import pandas as pd
+# import pandas as pd
 import pytz
 
 
@@ -79,7 +79,7 @@ def get_stops_eta(route_number: str):
 
 def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O'):
 
-    headers = ['站名', '到站時間', '多久後到?']
+    headers = ['站名', '到站時間', '等候時間']
     table =[headers]
     time_now =dt.datetime.now(dt.timezone.utc).astimezone()
     for stop in stops_eta:
