@@ -102,7 +102,7 @@ def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O
 f"""
 # Fan 九巴到站時間查詢
 
-## 現在時間: {dt.datetime.now().strftime('%H:%M:%S') }
+## 現在時間: {dt.datetime.now(dt.timezone.utc).astimezone().strftime('%H:%M:%S') }
 
 """
 
