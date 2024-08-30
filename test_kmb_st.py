@@ -6,7 +6,7 @@ import datetime as dt
 import pickle
 import os
 import pandas as pd
-
+import pytz
 
 
 url0 = 'https://data.etabus.gov.hk/'
@@ -99,10 +99,11 @@ def show_route_st(stop_name_list, stops_eta, route_number: str, in_out: str = 'O
 
 
 
+timenow = dt.datetime.now(pytz.timezone('Asia/Taipei')).strftime('%H:%M:%S')
 f"""
 # Fan 九巴到站時間查詢
 
-## 現在時間: {dt.datetime.now(dt.timezone.utc).astimezone().strftime('%H:%M:%S') }
+## 現在時間: {timenow}
 
 """
 
