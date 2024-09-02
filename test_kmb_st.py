@@ -116,6 +116,6 @@ if route_number:
     stops_eta_dict = get_stops_eta(route_number)
     for in_out in ['O', 'I']:
         with columns_dict[in_out]:
-            st.header(f"{'回' if in_out=='I' else '去'}程")
             stop_name_list = get_stop_names(route_number, in_out)
+            st.header(f"{'回' if in_out=='I' else '去'}程: 往 {stop_name_list[-1]} 方向")
             show_route_st(stop_name_list, stops_eta_dict[in_out], route_number, in_out)

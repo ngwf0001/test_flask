@@ -5,7 +5,7 @@ from tabulate import tabulate
 import airportsdata
 import art
 
-re_date = re.compile('^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$')
+re_date = re.compile(r'^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$')
 
 
 today = dt.datetime.now().strftime('%Y-%m-%d')
